@@ -7,7 +7,7 @@ const { saveAccount, saveTransaction, getTransactionsByAccount } = require('./db
 const router        = express.Router();
 const ethApi= new ethereumApi();
 
-router.use(express.json()); // Middleware to parse JSON requests
+router.use(express.json());
 
 // MongoDB connection
 mongoose.connect('mongodb://zapper-mongo:27017/ali_data', {
