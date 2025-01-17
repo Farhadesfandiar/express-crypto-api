@@ -1,0 +1,55 @@
+version: '3'
+
+networks:
+  zapper-data:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
+
+services:
+  zapper-app:
+    build:
+      context: .
+    container_name: zapper-app
+    ports:
+      - "3000:3000"
+    networks:
+      - zapper-data
+    depends_on:
+      - zapper-mongo
+    volumes:
+      - .:/app      # Mount the app code into the container
+      - /app/node_modules # Avoid overwriting node_modules in the container
+    command: npm start
+
+  zapper-mongo:
+    image: mongo:latest
+    container_name: zapper-mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - zapper-data
+    volumes:
+      - mongo-data:/data/db
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: user
+#      MONGO_INITDB_ROOT_PASSWORD: zapper
+#
+#  adminmongo:
+#    image: mrvautin/adminmongo
+#    container_name: adminmongo
+#    depends_on:
+#      - zapper-mongo
+#    ports:
+#      - "8082:1234"
+#    environment:
+#      CONN_NAME: "MongoDB" # Connection name visible in the adminMongo UI
+#      DB_HOST: "zapper-mongo"   # Reference the MongoDB service name
+#      DB_PORT: 27017
+#      DB_USERNAME: user    # Username specified in the MongoDB service
+#      DB_PASSWORD: zapper # Password specified in the MongoDB service
+#      HOST: "0.0.0.0"
+#    networks:
+#      - zapper-data
